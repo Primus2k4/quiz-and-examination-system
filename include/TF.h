@@ -5,6 +5,8 @@
 #include <string>
 
 class TF : public Question {
+private:
+    bool m_correctAnswer;
 public:
     TF(int id,
         const std::string& prompt,
@@ -19,8 +21,7 @@ public:
     bool getCorrectAnswer() const;
     void setCorrectAnswer(bool correctAnswer);
 
-private:
-    bool m_correctAnswer;
+
 };
 
 #endif 

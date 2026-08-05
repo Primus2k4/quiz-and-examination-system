@@ -4,6 +4,10 @@
 #include <string>
 
 class Question {
+private:
+    int m_id;
+    std::string m_prompt;
+    int m_points;
 public:
     Question(int id, const std::string& prompt, int points);
 
@@ -17,10 +21,7 @@ public:
     bool setPrompt(const std::string& prompt);   
     bool setPoints(int points);                  
 
-private:
-    int m_id;      
-    std::string m_prompt;   
-    int m_points;   
+  
 };
 
 #endif
