@@ -7,7 +7,6 @@
 #include <cctype>
 using namespace std;
 
-// Tach chuoi thu cong theo 1 ky tu phan cach
 static int splitByChar(const string& str, char delim, string result[], int maxParts) {
     int count = 0;
     string current = "";
@@ -17,7 +16,7 @@ static int splitByChar(const string& str, char delim, string result[], int maxPa
                 result[count++] = current;
                 current = "";
             } else {
-                current += str[i]; // phan cuoi giu nguyen, tranh cat nham du lieu co dau |
+                current += str[i]; 
             }
         } else {
             current += str[i];
@@ -53,7 +52,6 @@ bool DataFileManager::loadQuestions(QuestionBank& bank, const string& filepath) 
         lineNo++;
         if (line.empty()) continue;
 
-        // Doc truoc token dau tien de biet loai
         string typeParts[2];
         int firstSplit = splitByChar(line, '|', typeParts, 2);
         if (firstSplit < 2) {
@@ -129,9 +127,7 @@ bool DataFileManager::saveQuestions(const QuestionBank& bank, const string& file
         cout << "Khong the ghi file " << filepath << "\n";
         return false;
     }
-    // TODO: can QuestionBank cung cap ham duyet toan bo cau hoi (VD getAt(index))
-    // va Question can co ham lay lai du lieu tho (getType/getId/getPrompt/getPoints)
-    // de ghi dung dinh dang MCQ|.../TF|...
+    
     fout.close();
     return true;
 }
@@ -161,8 +157,7 @@ bool DataFileManager::loadQuizzes(QuizManager& manager, const string& filepath) 
             cout << "Dong " << lineNo << ": quiz id " << quizId << " bi trung, bo qua.\n";
             continue;
         }
-        // parts[2] la danh sach questionId cach nhau boi dau phay - can bank de add
-        // Se hoan thien khi co tham chieu QuestionBank truyen vao ham nay
+        
     }
     fin.close();
     return true;
@@ -174,8 +169,7 @@ bool DataFileManager::saveQuizzes(const QuizManager& manager, const string& file
         cout << "Khong the ghi file " << filepath << "\n";
         return false;
     }
-    // TODO: can QuizManager cung cap ham duyet toan bo Quiz (VD getAt(index))
-    // va Quiz can co getQuestionCount()/getQuestionId(index) de ghi dung dinh dang
+ 
     fout.close();
     return true;
 }
