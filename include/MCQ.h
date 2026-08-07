@@ -5,6 +5,9 @@
 #include <string>
 
 class MCQ : public Question {
+private:
+    std::string m_options[4];
+    char m_correctOption;
 public:
     MCQ(int id,
         const std::string& prompt,
@@ -21,10 +24,7 @@ public:
     char getCorrectOption() const;
     bool setOption(int index, const std::string& text); 
     bool setCorrectOption(char option);                 
-
-private:
-    std::string m_options[4];  
-    char m_correctOption; 
+ 
 };
 
 #endif 
