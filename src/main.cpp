@@ -1,6 +1,7 @@
-#include <iostream>
+#include "QuizApp.h"
 
 int main() {
-    std::cout << "Quiz and Examination System" << std::endl;
+    QuizApp app;
+    app.run();
     return 0;
 }
