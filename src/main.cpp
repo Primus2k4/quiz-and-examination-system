@@ -1,4 +1,4 @@
-#include "QuizApp.h"
+#include "../include/QuizApp.h"
 
 int main() {
     QuizApp app;
