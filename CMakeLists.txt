@@ -15,7 +15,7 @@ file(GLOB SOURCES "src/*.cpp")
 file(GLOB HEADERS "src/*.h" "src/*.hpp")
 
 # Create the executable targeting the discovered files
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} "src/Question.cpp" "src/MCQ.cpp" "src/TF.cpp" "tests/test_question.cpp")
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Organize files into filters in the Visual Studio Solution Explorer
 source_group("Source Files" FILES ${SOURCES})
