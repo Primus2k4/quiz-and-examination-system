@@ -21,6 +21,7 @@ public:
     bool updateQuestion(int id, Question* newQuestion);
 
     Question* findById(int id) const;
+    Question* getAt(int index) const;
 
     void displayByPrompt(const string& keyword) const;
     void displayAll() const;

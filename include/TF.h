@@ -18,6 +18,7 @@ public:
 
     bool checkAnswer(const std::string& answer) const override;
     std::string getType() const override;
+    bool isValid() const override;
     bool getCorrectAnswer() const;
     void setCorrectAnswer(bool correctAnswer);
 
