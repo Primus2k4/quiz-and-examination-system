@@ -55,200 +55,210 @@ void QuizApp::showMainMenu() {
 }
 
 void QuizApp::questionMenu() {
-    cout << "\n--- QUESTION BANK ---\n";
-    cout << "1. Them cau hoi MCQ\n";
-    cout << "2. Them cau hoi TF\n";
-    cout << "3. Xoa cau hoi\n";
-    cout << "4. Tim theo ID\n";
-    cout << "5. Tim theo tu khoa prompt\n";
-    cout << "6. Hien thi tat ca\n";
-    cout << "0. Quay lai\n";
-    cout << "Chon: ";
+    bool back = false;
+    while (!back) {
+        cout << "\n--- QUESTION BANK ---\n";
+        cout << "1. Them cau hoi MCQ\n";
+        cout << "2. Them cau hoi TF\n";
+        cout << "3. Xoa cau hoi\n";
+        cout << "4. Tim theo ID\n";
+        cout << "5. Tim theo tu khoa prompt\n";
+        cout << "6. Hien thi tat ca\n";
+        cout << "0. Quay lai\n";
+        cout << "Chon: ";
 
-    string input;
-    getline(cin, input);
-    if (!InputValidator::isPositiveInt(input)) {
-        cout << "Lua chon khong hop le.\n";
-        return;
-    }
-    int choice = stoi(input);
-
-    switch (choice) {
-        case 1: {
-            cout << "Nhap id (so nguyen duong): ";
-            string idStr; getline(cin, idStr);
-            if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; return; }
-
-            cout << "Nhap points (so nguyen duong): ";
-            string ptStr; getline(cin, ptStr);
-            if (!InputValidator::isPositiveInt(ptStr)) { cout << "Points khong hop le.\n"; return; }
-
-            cout << "Nhap prompt: ";
-            string prompt; getline(cin, prompt);
-            if (!InputValidator::isNonEmptyString(prompt)) { cout << "Prompt khong duoc rong.\n"; return; }
-
-            string options[4];
-            for (int i = 0; i < 4; i++) {
-                cout << "Nhap lua chon " << (char)('A' + i) << ": ";
-                getline(cin, options[i]);
-                if (!InputValidator::isNonEmptyString(options[i])) { cout << "Lua chon khong duoc rong.\n"; return; }
-            }
-
-            cout << "Nhap dap an dung (A-D): ";
-            string correctStr; getline(cin, correctStr);
-            if (correctStr.empty() || !InputValidator::isValidChoice(correctStr[0], 'A', 'D')) {
-                cout << "Dap an phai la A-D.\n"; return;
-            }
-
-            Question* q = new MCQ(stoi(idStr), prompt, stoi(ptStr), options, toupper(correctStr[0]));
-            if (!bank.addQuestion(q)) { cout << "Them that bai (ID trung).\n"; delete q; }
-            else cout << "Them cau hoi thanh cong.\n";
-            break;
-        }
-        case 2: {
-            cout << "Nhap id (so nguyen duong): ";
-            string idStr; getline(cin, idStr);
-            if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; return; }
-
-            cout << "Nhap points (so nguyen duong): ";
-            string ptStr; getline(cin, ptStr);
-            if (!InputValidator::isPositiveInt(ptStr)) { cout << "Points khong hop le.\n"; return; }
-
-            cout << "Nhap prompt: ";
-            string prompt; getline(cin, prompt);
-            if (!InputValidator::isNonEmptyString(prompt)) { cout << "Prompt khong duoc rong.\n"; return; }
-
-            cout << "Dap an dung (true/false): ";
-            string ansStr; getline(cin, ansStr);
-            bool correctAnswer;
-            if (ansStr == "true") correctAnswer = true;
-            else if (ansStr == "false") correctAnswer = false;
-            else { cout << "Chi nhap true hoac false.\n"; return; }
-
-            Question* q = new TF(stoi(idStr), prompt, stoi(ptStr), correctAnswer);
-            if (!bank.addQuestion(q)) { cout << "Them that bai (ID trung).\n"; delete q; }
-            else cout << "Them cau hoi thanh cong.\n";
-            break;
-        }
-        case 3: {
-            cout << "Nhap id can xoa: ";
-            string idStr; getline(cin, idStr);
-            if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; return; }
-            int id = stoi(idStr);
-            if (bank.removeQuestion(id)) {
-                manager.removeQuestionFromAllQuiz(id);
-                cout << "Da xoa cau hoi khoi Question Bank va cac Quiz lien quan.\n";
-            } else {
-                cout << "Khong tim thay ID nay.\n";
-            }
-            break;
-        }
-        case 4: {
-            cout << "Nhap id can tim: ";
-            string idStr; getline(cin, idStr);
-            if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; return; }
-            Question* q = bank.findById(stoi(idStr));
-            if (q) q->display();
-            else cout << "Khong tim thay.\n";
-            break;
-        }
-        case 5: {
-            cout << "Nhap tu khoa: ";
-            string keyword; getline(cin, keyword);
-            bank.displayByPrompt(keyword);
-            break;
-        }
-        case 6:
-            bank.displayAll();
-            break;
-        case 0:
-            return;
-        default:
+        string input;
+        getline(cin, input);
+        if (!InputValidator::isPositiveInt(input)) {
             cout << "Lua chon khong hop le.\n";
+            continue;
+        }
+        int choice = stoi(input);
+
+        switch (choice) {
+            case 1: {
+                cout << "Nhap id (so nguyen duong): ";
+                string idStr; getline(cin, idStr);
+                if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
+
+                cout << "Nhap points (so nguyen duong): ";
+                string ptStr; getline(cin, ptStr);
+                if (!InputValidator::isPositiveInt(ptStr)) { cout << "Points khong hop le.\n"; break; }
+
+                cout << "Nhap prompt: ";
+                string prompt; getline(cin, prompt);
+                if (!InputValidator::isNonEmptyString(prompt)) { cout << "Prompt khong duoc rong.\n"; break; }
+
+                string options[4];
+                bool validOptions = true;
+                for (int i = 0; i < 4; i++) {
+                    cout << "Nhap lua chon " << (char)('A' + i) << ": ";
+                    getline(cin, options[i]);
+                    if (!InputValidator::isNonEmptyString(options[i])) { validOptions = false; }
+                }
+                if (!validOptions) { cout << "Lua chon khong duoc rong.\n"; break; }
+
+                cout << "Nhap dap an dung (A-D): ";
+                string correctStr; getline(cin, correctStr);
+                if (correctStr.empty() || !InputValidator::isValidChoice(correctStr[0], 'A', 'D')) {
+                    cout << "Dap an phai la A-D.\n"; break;
+                }
+
+                Question* q = new MCQ(stoi(idStr), prompt, stoi(ptStr), options, toupper(correctStr[0]));
+                if (!bank.addQuestion(q)) { cout << "Them that bai (ID trung).\n"; delete q; }
+                else cout << "Them cau hoi thanh cong.\n";
+                break;
+            }
+            case 2: {
+                cout << "Nhap id (so nguyen duong): ";
+                string idStr; getline(cin, idStr);
+                if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
+
+                cout << "Nhap points (so nguyen duong): ";
+                string ptStr; getline(cin, ptStr);
+                if (!InputValidator::isPositiveInt(ptStr)) { cout << "Points khong hop le.\n"; break; }
+
+                cout << "Nhap prompt: ";
+                string prompt; getline(cin, prompt);
+                if (!InputValidator::isNonEmptyString(prompt)) { cout << "Prompt khong duoc rong.\n"; break; }
+
+                cout << "Dap an dung (true/false): ";
+                string ansStr; getline(cin, ansStr);
+                bool correctAnswer;
+                if (ansStr == "true") correctAnswer = true;
+                else if (ansStr == "false") correctAnswer = false;
+                else { cout << "Chi nhap true hoac false.\n"; break; }
+
+                Question* q = new TF(stoi(idStr), prompt, stoi(ptStr), correctAnswer);
+                if (!bank.addQuestion(q)) { cout << "Them that bai (ID trung).\n"; delete q; }
+                else cout << "Them cau hoi thanh cong.\n";
+                break;
+            }
+            case 3: {
+                cout << "Nhap id can xoa: ";
+                string idStr; getline(cin, idStr);
+                if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
+                int id = stoi(idStr);
+                if (bank.removeQuestion(id)) {
+                    manager.removeQuestionFromAllQuiz(id);
+                    cout << "Da xoa cau hoi khoi Question Bank va cac Quiz lien quan.\n";
+                } else {
+                    cout << "Khong tim thay ID nay.\n";
+                }
+                break;
+            }
+            case 4: {
+                cout << "Nhap id can tim: ";
+                string idStr; getline(cin, idStr);
+                if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
+                Question* q = bank.findById(stoi(idStr));
+                if (q) q->display();
+                else cout << "Khong tim thay.\n";
+                break;
+            }
+            case 5: {
+                cout << "Nhap tu khoa: ";
+                string keyword; getline(cin, keyword);
+                bank.displayByPrompt(keyword);
+                break;
+            }
+            case 6:
+                bank.displayAll();
+                break;
+            case 0:
+                back = true;
+                break;
+            default:
+                cout << "Lua chon khong hop le.\n";
+        }
     }
 }
 
 void QuizApp::quizMenu() {
-    cout << "\n--- QUIZ MANAGEMENT ---\n";
-    cout << "1. Tao Quiz\n";
-    cout << "2. Doi ten Quiz\n";
-    cout << "3. Xoa Quiz\n";
-    cout << "4. Them cau hoi vao Quiz\n";
-    cout << "5. Xoa cau hoi khoi Quiz\n";
-    cout << "6. Hien thi tat ca Quiz\n";
-    cout << "0. Quay lai\n";
-    cout << "Chon: ";
+    bool back = false;
+    while (!back) {
+        cout << "\n--- QUIZ MANAGEMENT ---\n";
+        cout << "1. Tao Quiz\n";
+        cout << "2. Doi ten Quiz\n";
+        cout << "3. Xoa Quiz\n";
+        cout << "4. Them cau hoi vao Quiz\n";
+        cout << "5. Xoa cau hoi khoi Quiz\n";
+        cout << "6. Hien thi tat ca Quiz\n";
+        cout << "0. Quay lai\n";
+        cout << "Chon: ";
 
-    string input;
-    getline(cin, input);
-    if (!InputValidator::isPositiveInt(input)) { cout << "Lua chon khong hop le.\n"; return; }
-    int choice = stoi(input);
+        string input;
+        getline(cin, input);
+        if (!InputValidator::isPositiveInt(input)) { cout << "Lua chon khong hop le.\n"; continue; }
+        int choice = stoi(input);
 
-    switch (choice) {
-        case 1: {
-            cout << "Nhap Quiz ID: ";
-            string idStr; getline(cin, idStr);
-            if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; return; }
-            cout << "Nhap title: ";
-            string title; getline(cin, title);
-            if (!InputValidator::isNonEmptyString(title)) { cout << "Title khong duoc rong.\n"; return; }
-            if (manager.createQuiz(stoi(idStr), title)) cout << "Tao Quiz thanh cong.\n";
-            else cout << "Tao that bai (ID trung hoac title trung/rong).\n";
-            break;
-        }
-        case 2: {
-            cout << "Nhap Quiz ID: ";
-            string idStr; getline(cin, idStr);
-            if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; return; }
-            cout << "Nhap title moi: ";
-            string title; getline(cin, title);
-            if (manager.renameQuiz(stoi(idStr), title)) cout << "Doi ten thanh cong.\n";
-            else cout << "Doi ten that bai.\n";
-            break;
-        }
-        case 3: {
-            cout << "Nhap Quiz ID can xoa: ";
-            string idStr; getline(cin, idStr);
-            if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; return; }
-            if (manager.deleteQuiz(stoi(idStr))) cout << "Da xoa Quiz.\n";
-            else cout << "Khong tim thay Quiz.\n";
-            break;
-        }
-        case 4: {
-            cout << "Nhap Quiz ID: ";
-            string qzIdStr; getline(cin, qzIdStr);
-            cout << "Nhap Question ID: ";
-            string qIdStr; getline(cin, qIdStr);
-            if (!InputValidator::isPositiveInt(qzIdStr) || !InputValidator::isPositiveInt(qIdStr)) {
-                cout << "ID khong hop le.\n"; return;
+        switch (choice) {
+            case 1: {
+                cout << "Nhap Quiz ID: ";
+                string idStr; getline(cin, idStr);
+                if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
+                cout << "Nhap title: ";
+                string title; getline(cin, title);
+                if (!InputValidator::isNonEmptyString(title)) { cout << "Title khong duoc rong.\n"; break; }
+                if (manager.createQuiz(stoi(idStr), title)) cout << "Tao Quiz thanh cong.\n";
+                else cout << "Tao that bai (ID trung hoac title trung/rong).\n";
+                break;
             }
-            if (manager.addQuestionToQuiz(stoi(qzIdStr), stoi(qIdStr), bank))
-                cout << "Them cau hoi vao Quiz thanh cong.\n";
-            else
-                cout << "That bai (ID khong ton tai hoac da co trong Quiz).\n";
-            break;
-        }
-        case 5: {
-            cout << "Nhap Quiz ID: ";
-            string qzIdStr; getline(cin, qzIdStr);
-            cout << "Nhap Question ID can xoa: ";
-            string qIdStr; getline(cin, qIdStr);
-            if (!InputValidator::isPositiveInt(qzIdStr) || !InputValidator::isPositiveInt(qIdStr)) {
-                cout << "ID khong hop le.\n"; return;
+            case 2: {
+                cout << "Nhap Quiz ID: ";
+                string idStr; getline(cin, idStr);
+                if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
+                cout << "Nhap title moi: ";
+                string title; getline(cin, title);
+                if (manager.renameQuiz(stoi(idStr), title)) cout << "Doi ten thanh cong.\n";
+                else cout << "Doi ten that bai.\n";
+                break;
             }
-            if (manager.removeQuestionFromQuiz(stoi(qzIdStr), stoi(qIdStr)))
-                cout << "Da xoa cau hoi khoi Quiz.\n";
-            else
-                cout << "That bai.\n";
-            break;
+            case 3: {
+                cout << "Nhap Quiz ID can xoa: ";
+                string idStr; getline(cin, idStr);
+                if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
+                if (manager.deleteQuiz(stoi(idStr))) cout << "Da xoa Quiz.\n";
+                else cout << "Khong tim thay Quiz.\n";
+                break;
+            }
+            case 4: {
+                cout << "Nhap Quiz ID: ";
+                string qzIdStr; getline(cin, qzIdStr);
+                cout << "Nhap Question ID: ";
+                string qIdStr; getline(cin, qIdStr);
+                if (!InputValidator::isPositiveInt(qzIdStr) || !InputValidator::isPositiveInt(qIdStr)) {
+                    cout << "ID khong hop le.\n"; break;
+                }
+                if (manager.addQuestionToQuiz(stoi(qzIdStr), stoi(qIdStr), bank))
+                    cout << "Them cau hoi vao Quiz thanh cong.\n";
+                else
+                    cout << "That bai (ID khong ton tai hoac da co trong Quiz).\n";
+                break;
+            }
+            case 5: {
+                cout << "Nhap Quiz ID: ";
+                string qzIdStr; getline(cin, qzIdStr);
+                cout << "Nhap Question ID can xoa: ";
+                string qIdStr; getline(cin, qIdStr);
+                if (!InputValidator::isPositiveInt(qzIdStr) || !InputValidator::isPositiveInt(qIdStr)) {
+                    cout << "ID khong hop le.\n"; break;
+                }
+                if (manager.removeQuestionFromQuiz(stoi(qzIdStr), stoi(qIdStr)))
+                    cout << "Da xoa cau hoi khoi Quiz.\n";
+                else
+                    cout << "That bai.\n";
+                break;
+            }
+            case 6:
+                manager.displayAll();
+                break;
+            case 0:
+                back = true;
+                break;
+            default:
+                cout << "Lua chon khong hop le.\n";
         }
-        case 6:
-            manager.displayAll();
-            break;
-        case 0:
-            return;
-        default:
-            cout << "Lua chon khong hop le.\n";
     }
 }
 
