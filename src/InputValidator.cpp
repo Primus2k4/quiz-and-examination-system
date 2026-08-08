@@ -6,6 +6,7 @@ bool InputValidator::isPositiveInt(const std::string& str) {
     for (int i = 0; i < (int)str.size(); i++) {
         if (!isdigit(str[i])) return false;
     }
+    if (str.find_first_not_of('0') == std::string::npos) return false;
     return true;
 }
 
