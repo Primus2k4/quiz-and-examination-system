@@ -178,7 +178,6 @@ bool DataFileManager::loadQuizzes(QuizManager& manager, const QuestionBank& bank
             continue;
         }
 
-        // THEM PHAN NAY: doc danh sach questionId
         string idList[30];
         int idCount = splitByChar(parts[2], ',', idList, 30);
         for (int i = 0; i < idCount; i++) {
