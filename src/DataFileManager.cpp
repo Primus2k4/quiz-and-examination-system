@@ -199,7 +199,16 @@ bool DataFileManager::saveQuizzes(const QuizManager& manager, const string& file
         cout << "Khong the ghi file " << filepath << "\n";
         return false;
     }
- 
+    for (int i = 0; i < manager.getCount(); i++) {
+        const Quiz* q = manager.getAt(i);
+        if (q == nullptr) continue;
+        fout << q->getId() << "|" << q->getTitle() << "|";
+        for (int j = 0; j < q->getQuestionCount(); j++) {
+            fout << q->getQuestionId(j);
+            if (j != q->getQuestionCount() - 1) fout << ",";
+        }
+        fout << "\n";
+    }
     fout.close();
     return true;
 }
