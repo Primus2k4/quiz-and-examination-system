@@ -9,5 +9,6 @@ public:
     static bool isNonNegativeInt(const std::string& str);   
     static bool isValidChoice(char choice, char minChoice, char maxChoice);
     static bool isNonEmptyString(const std::string& str);
+    static bool hasDelimiterChar(const std::string& str);
 };
 #endif
