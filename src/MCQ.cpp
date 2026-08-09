@@ -35,6 +35,13 @@ std::string MCQ::getType() const {
     return "MCQ";
 }
 
+bool MCQ::isValid() const {
+    if (getId() <= 0 || getPrompt().empty() || getPoints() <= 0) return false;
+    if (m_correctOption < 'A' || m_correctOption > 'D') return false;
+    for (int i = 0; i < 4; ++i) if (m_options[i].empty()) return false;
+    return true;
+}
+
 std::string MCQ::getOption(int index) const {
     if (index < 0 || index > 3) return "";
     return m_options[index];

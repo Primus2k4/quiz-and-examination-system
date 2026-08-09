@@ -127,12 +127,32 @@ bool DataFileManager::saveQuestions(const QuestionBank& bank, const string& file
         cout << "Khong the ghi file " << filepath << "\n";
         return false;
     }
-    
+
+    for (int i = 0; i < bank.getCount(); i++) {
+        Question* q = bank.getAt(i);
+        if (q == nullptr) continue;
+
+        if (q->getType() == "MCQ") {
+            MCQ* mcq = static_cast<MCQ*>(q);
+            fout << "MCQ|" << mcq->getId() << "|" << mcq->getPoints() << "|"
+                 << mcq->getPrompt() << "|"
+                 << mcq->getOption(0) << ";" << mcq->getOption(1) << ";"
+                 << mcq->getOption(2) << ";" << mcq->getOption(3) << "|"
+                 << mcq->getCorrectOption() << "\n";
+        }
+        else if (q->getType() == "TF") {
+            TF* tf = static_cast<TF*>(q);
+            fout << "TF|" << tf->getId() << "|" << tf->getPoints() << "|"
+                 << tf->getPrompt() << "|"
+                 << (tf->getCorrectAnswer() ? "true" : "false") << "\n";
+        }
+    }
+
     fout.close();
     return true;
 }
 
-bool DataFileManager::loadQuizzes(QuizManager& manager, const string& filepath) {
+bool DataFileManager::loadQuizzes(QuizManager& manager, const QuestionBank& bank, const string& filepath) {
     ifstream fin(filepath.c_str());
     if (!fin.is_open()) {
         cout << "Khong tim thay file " << filepath << ", bat dau voi Quiz rong.\n";
@@ -157,12 +177,22 @@ bool DataFileManager::loadQuizzes(QuizManager& manager, const string& filepath) 
             cout << "Dong " << lineNo << ": quiz id " << quizId << " bi trung, bo qua.\n";
             continue;
         }
-        
+
+        string idList[30];
+        int idCount = splitByChar(parts[2], ',', idList, 30);
+        for (int i = 0; i < idCount; i++) {
+            if (isAllDigits(idList[i])) {
+                int qId = stoi(idList[i]);
+                if (!manager.addQuestionToQuiz(quizId, qId, bank)) {
+                    cout << "Dong " << lineNo << ": question id " << qId
+                         << " khong hop le cho quiz " << quizId << ", bo qua.\n";
+                }
+            }
+        }
     }
     fin.close();
     return true;
 }
-
 bool DataFileManager::saveQuizzes(const QuizManager& manager, const string& filepath) {
     ofstream fout(filepath.c_str());
     if (!fout.is_open()) {

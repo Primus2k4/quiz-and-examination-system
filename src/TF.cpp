@@ -37,6 +37,10 @@ std::string TF::getType() const {
     return "TF";
 }
 
+bool TF::isValid() const {
+    return getId() > 0 && !getPrompt().empty() && getPoints() > 0;
+}
+
 bool TF::getCorrectAnswer() const {
     return m_correctAnswer;
 }

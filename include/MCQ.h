@@ -20,6 +20,7 @@ public:
 
     bool checkAnswer(const std::string& answer) const override;
     std::string getType() const override;
+    bool isValid() const override;
     std::string getOption(int index) const; 
     char getCorrectOption() const;
     bool setOption(int index, const std::string& text); 
