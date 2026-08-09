@@ -26,7 +26,7 @@ public:
     // Search
     Quiz* findQuiz(int id);
     const Quiz* findQuiz(int id) const;
-
+    const Quiz* getAt(int index) const;
     // Manage Question
     bool addQuestionToQuiz(int quizId,
         int questionId,
