@@ -18,6 +18,11 @@ bool InputValidator::isNonNegativeInt(const std::string& str) {
     }
     return true;
 }
+bool InputValidator::hasDelimiterChar(const std::string& str) {
+    return str.find('|') != std::string::npos ||
+           str.find(';') != std::string::npos ||
+           str.find(',') != std::string::npos;
+}
 
 bool InputValidator::isValidChoice(char choice, char minChoice, char maxChoice) {
     char c = toupper(choice);
