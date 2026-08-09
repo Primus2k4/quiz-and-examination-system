@@ -21,7 +21,9 @@ static bool inputCommonFields(int& id, int& points, string& prompt) {
 
     cout << "Nhap prompt: ";
     getline(cin, prompt);
-    if (!InputValidator::isNonEmptyString(prompt)) { cout << "Prompt khong duoc rong.\n"; return false; }
+    if (!InputValidator::isNonEmptyString(prompt) || InputValidator::hasDelimiterChar(prompt)) {
+        cout << "Prompt khong hop le (rong hoac chua ky tu | ; ,).\n"; return false;
+    }
 
     id = stoi(idStr);
     points = stoi(ptStr);
