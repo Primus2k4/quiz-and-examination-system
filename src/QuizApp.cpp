@@ -103,6 +103,7 @@ void QuizApp::questionMenu() {
         cout << "4. Tim theo ID\n";
         cout << "5. Tim theo tu khoa prompt\n";
         cout << "6. Hien thi tat ca\n";
+        cout << "7. Sua cau hoi\n";
         cout << "0. Quay lai\n";
         cout << "Chon: ";
 
@@ -124,9 +125,10 @@ void QuizApp::questionMenu() {
                 for (int i = 0; i < 4; i++) {
                     cout << "Nhap lua chon " << (char)('A' + i) << ": ";
                     getline(cin, options[i]);
-                    if (!InputValidator::isNonEmptyString(options[i])) { validOptions = false; }
+                    if (!InputValidator::isNonEmptyString(options[i]) || InputValidator::hasDelimiterChar(options[i]))
+                        validOptions = false;
                 }
-                if (!validOptions) { cout << "Lua chon khong duoc rong.\n"; break; }
+                if (!validOptions) { cout << "Lua chon khong hop le (rong hoac chua ky tu | ; ,).\n"; break; }
 
                 cout << "Nhap dap an dung (A-D): ";
                 string correctStr; getline(cin, correctStr);
@@ -186,6 +188,62 @@ void QuizApp::questionMenu() {
             case 6:
                 bank.displayAll();
                 break;
+            case 7: {
+                cout << "Nhap id cau hoi can sua: ";
+                string idStr; getline(cin, idStr);
+                if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
+                int id = stoi(idStr);
+                Question* old = bank.findById(id);
+                if (!old) { cout << "Khong tim thay ID nay.\n"; break; }
+
+                cout << "Nhap prompt moi: ";
+                string prompt; getline(cin, prompt);
+                if (!InputValidator::isNonEmptyString(prompt) || InputValidator::hasDelimiterChar(prompt)) {
+                    cout << "Prompt khong hop le (rong hoac chua ky tu | ; ,).\n"; break;
+                }
+
+                cout << "Nhap points moi: ";
+                string ptStr; getline(cin, ptStr);
+                if (!InputValidator::isPositiveInt(ptStr)) { cout << "Points khong hop le.\n"; break; }
+                int points = stoi(ptStr);
+
+                Question* newQ = nullptr;
+                if (old->getType() == "MCQ") {
+                    string options[4];
+                    bool validOptions = true;
+                    for (int i = 0; i < 4; i++) {
+                        cout << "Nhap lua chon " << (char)('A' + i) << ": ";
+                        getline(cin, options[i]);
+                        if (!InputValidator::isNonEmptyString(options[i]) || InputValidator::hasDelimiterChar(options[i]))
+                            validOptions = false;
+                    }
+                    if (!validOptions) { cout << "Lua chon khong hop le.\n"; break; }
+
+                    cout << "Nhap dap an dung (A-D): ";
+                    string correctStr; getline(cin, correctStr);
+                    if (correctStr.empty() || !InputValidator::isValidChoice(correctStr[0], 'A', 'D')) {
+                        cout << "Dap an phai la A-D.\n"; break;
+                    }
+                    newQ = new MCQ(id, prompt, points, options, toupper(correctStr[0]));
+                }
+                else if (old->getType() == "TF") {
+                    cout << "Dap an dung (true/false): ";
+                    string ansStr; getline(cin, ansStr);
+                    bool correctAnswer;
+                    if (ansStr == "true") correctAnswer = true;
+                    else if (ansStr == "false") correctAnswer = false;
+                    else { cout << "Chi nhap true hoac false.\n"; break; }
+                    newQ = new TF(id, prompt, points, correctAnswer);
+                }
+
+                if (newQ != nullptr && bank.updateQuestion(id, newQ)) {
+                    cout << "Cap nhat thanh cong.\n";
+                } else {
+                    cout << "Cap nhat that bai.\n";
+                    delete newQ;
+                }
+                break;
+            }
             case 0:
                 back = true;
                 break;
@@ -194,8 +252,6 @@ void QuizApp::questionMenu() {
         }
     }
 }
-
-
 
 void QuizApp::quizMenu() {
     bool back = false;
@@ -222,7 +278,9 @@ void QuizApp::quizMenu() {
                 if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
                 cout << "Nhap title: ";
                 string title; getline(cin, title);
-                if (!InputValidator::isNonEmptyString(title)) { cout << "Title khong duoc rong.\n"; break; }
+                if (!InputValidator::isNonEmptyString(title) || InputValidator::hasDelimiterChar(title)) {
+                    cout << "Title khong hop le (rong hoac chua ky tu | ; ,).\n"; break;
+                }
                 if (manager.createQuiz(stoi(idStr), title)) cout << "Tao Quiz thanh cong.\n";
                 else cout << "Tao that bai (ID trung hoac title trung/rong).\n";
                 break;
@@ -233,6 +291,9 @@ void QuizApp::quizMenu() {
                 if (!InputValidator::isPositiveInt(idStr)) { cout << "ID khong hop le.\n"; break; }
                 cout << "Nhap title moi: ";
                 string title; getline(cin, title);
+                if (!InputValidator::isNonEmptyString(title) || InputValidator::hasDelimiterChar(title)) {
+                    cout << "Title khong hop le (rong hoac chua ky tu | ; ,).\n"; break;
+                }
                 if (manager.renameQuiz(stoi(idStr), title)) cout << "Doi ten thanh cong.\n";
                 else cout << "Doi ten that bai.\n";
                 break;
@@ -274,7 +335,6 @@ void QuizApp::quizMenu() {
         }
     }
 }
-
 
 
 void QuizApp::takeQuizMenu() {
