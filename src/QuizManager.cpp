@@ -35,6 +35,11 @@ const Quiz* QuizManager::findQuiz(int id) const
     return nullptr;
 }
 
+const Quiz* QuizManager::getAt(int index) const {
+    if (index < 0 || index >= count) return nullptr;
+    return &quizzes[index];
+}
+
 bool QuizManager::createQuiz(int id, const string& title)
 {
     if (count >= MAX_QUIZZES)
