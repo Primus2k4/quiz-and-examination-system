@@ -173,26 +173,42 @@ bool DataFileManager::loadQuizzes(QuizManager& manager, const QuestionBank& bank
         }
         int quizId = stoi(parts[0]);
         string title = parts[1];
+
         if (!manager.createQuiz(quizId, title)) {
             cout << "Dong " << lineNo << ": quiz id " << quizId << " bi trung, bo qua.\n";
             continue;
         }
 
-        string idList[30];
-        int idCount = splitByChar(parts[2], ',', idList, 30);
-        for (int i = 0; i < idCount; i++) {
-            if (isAllDigits(idList[i])) {
-                int qId = stoi(idList[i]);
-                if (!manager.addQuestionToQuiz(quizId, qId, bank)) {
-                    cout << "Dong " << lineNo << ": question id " << qId
-                         << " khong hop le cho quiz " << quizId << ", bo qua.\n";
+        bool hadIds = !parts[2].empty();
+        int addedCount = 0;
+
+        if (hadIds) {
+            string idList[30];
+            int idCount = splitByChar(parts[2], ',', idList, 30);
+            for (int i = 0; i < idCount; i++) {
+                if (isAllDigits(idList[i])) {
+                    int qId = stoi(idList[i]);
+                    if (manager.addQuestionToQuiz(quizId, qId, bank)) {
+                        addedCount++;
+                    } else {
+                        cout << "Dong " << lineNo << ": question id " << qId
+                             << " khong hop le cho quiz " << quizId << ", bo qua.\n";
+                    }
                 }
             }
+        }
+
+    
+        if (hadIds && addedCount == 0) {
+            cout << "Dong " << lineNo << ": tat ca question id cua quiz " << quizId
+                 << " deu khong hop le, bo qua ca quiz.\n";
+            manager.deleteQuiz(quizId);
         }
     }
     fin.close();
     return true;
 }
+
 bool DataFileManager::saveQuizzes(const QuizManager& manager, const string& filepath) {
     ofstream fout(filepath.c_str());
     if (!fout.is_open()) {

@@ -44,6 +44,9 @@ bool QuizManager::createQuiz(int id, const string& title)
 {
     if (count >= MAX_QUIZZES)
         return false;
+        
+    if (id <= 0)
+        return false;
 
     if (title.empty())
         return false;

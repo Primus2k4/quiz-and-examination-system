@@ -27,6 +27,10 @@ bool QuizEngine::start(Quiz* quiz, QuestionBank* bank)
     // Kiểm tra dữ liệu đầu vào
     if (quiz == nullptr || bank == nullptr)
         return false;
+        
+    // Không cho start lại khi đang có phiên làm bài dở dang
+    if (state == IN_PROGRESS)
+        return false;
 
     // Không thể bắt đầu nếu quiz không có câu hỏi
     if (quiz->getQuestionCount() == 0)
