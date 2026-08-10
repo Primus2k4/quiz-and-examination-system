@@ -3,3 +3,4 @@ TF|102|1|C++ supports inheritance|true
 MCQ|103|1|Thu do Viet Nam la gi?|Hue;Hanoi;Sai Gon;Da Nang|B
 TF|104|1|Java is compiled to bytecode|true
 MCQ|105|2|1 + 1 = ?|1;2;3;4|B
+TEST TC-01
