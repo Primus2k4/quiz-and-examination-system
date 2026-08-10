@@ -66,19 +66,33 @@ void QuizApp::run() {
         }
         choice = stoi(input);
 
-        switch (choice) {
-            case 1: questionMenu(); break;
-            case 2: quizMenu(); break;
-            case 3: takeQuizMenu(); break;
-            case 4:
-                DataFileManager::saveQuestions(bank, QUESTIONS_FILE);
-                DataFileManager::saveQuizzes(manager, QUIZZES_FILE);
-                cout << "Da luu du lieu. Tam biet!\n";
-                exitApp = true;
-                break;
-            default:
-                cout << "Lua chon ngoai pham vi, vui long nhap lai.\n";
+  switch (choice) {
+    case 1: questionMenu(); break;
+    case 2: quizMenu(); break;
+    case 3: takeQuizMenu(); break;
+    case 4: {
+        bool okQ = DataFileManager::saveQuestions(bank, QUESTIONS_FILE);
+        bool okZ = DataFileManager::saveQuizzes(manager, QUIZZES_FILE);
+        if (okQ && okZ) cout << "Da luu du lieu thanh cong.\n";
+        else cout << "Luu du lieu that bai (kiem tra quyen ghi file).\n";
+        break;
+    }
+    case 5: {
+        cout << "Ban co muon luu du lieu truoc khi thoat khong? (y/n): ";
+        string ans; getline(cin, ans);
+        if (!ans.empty() && (ans[0] == 'y' || ans[0] == 'Y')) {
+            DataFileManager::saveQuestions(bank, QUESTIONS_FILE);
+            DataFileManager::saveQuizzes(manager, QUIZZES_FILE);
+            cout << "Da luu du lieu. Tam biet!\n";
+        } else {
+            cout << "Thoat khong luu. Tam biet!\n";
         }
+        exitApp = true;
+        break;
+    }
+    default:
+        cout << "Lua chon ngoai pham vi, vui long nhap lai.\n";
+}
     }
 }
 
@@ -87,10 +101,10 @@ void QuizApp::showMainMenu() {
     cout << "1. Question Bank\n";
     cout << "2. Quiz Management\n";
     cout << "3. Take Quiz\n";
-    cout << "4. Save & Exit\n";
+    cout << "4. Save\n";
+    cout << "5. Exit\n";
     cout << "Chon: ";
 }
-
 
 
 void QuizApp::questionMenu() {
