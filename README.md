@@ -1,109 +1,188 @@
 # Quiz and Examination System
 
-A C++11 console-based **Quiz and Examination System** demonstrating Object-Oriented Programming, custom data structures, file persistence, and automated testing with **Google Test**.
+Ứng dụng console dùng để quản lý ngân hàng câu hỏi, quản lý nhiều bài kiểm tra và mô phỏng phiên làm bài. 
 
-## Build
+## Tính năng đã hoàn thành
 
-### Requirements
+- Question Bank: nạp/lưu file, thêm, sửa, xóa, hiển thị và tìm theo ID hoặc một phần prompt không phân biệt hoa/thường.
+- Xác thực câu hỏi: từ chối ID trùng, prompt rỗng, điểm không hợp lệ, lựa chọn MCQ rỗng và đáp án sai định dạng.
+- Quiz: tạo, đổi tên, xóa, hiển thị; thêm/xóa Question ID và giữ thứ tự câu hỏi.
+- Cascade delete: xóa câu hỏi khỏi Question Bank và các Quiz liên quan.
+- Take Quiz: Start, nhập/sửa đáp án, Next/Previous, Submit và hiển thị kết quả.
+- Chấm MCQ/TF qua `Question` pointer/reference bằng runtime polymorphism.
+- Persistence: đọc/ghi `questions.txt`, `quizzes.txt`, bỏ qua dòng lỗi và lưu khi `Save & Exit`.
+- Automated tests bằng Google Test Framework ở ba lớp: unit, integration và system/E2E.
 
-* C++11 compatible compiler: GCC, Clang, or MSVC
-* CMake 3.14+
+## Yêu cầu môi trường
 
-### Compile
+- CMake 3.14 trở lên.
+- Trình biên dịch hỗ trợ C++11 trở lên: MSVC, GCC hoặc Clang.
+- Kết nối mạng ở lần cấu hình đầu tiên để CMake tải Google Test v1.10.0 qua `FetchContent`.
 
-Run from the project root:
+Kiểm tra CMake:
 
-```cmd
+```powershell
+cmake --version
+```
+
+## Build dự án
+
+Chạy các lệnh tại thư mục gốc, nơi chứa `CMakeLists.txt`.
+
+### Windows - Visual Studio/MSVC
+
+```CMD
 mkdir build
 cd build
 cmake ..
 cmake --build .
 ```
 
-## Testing
+Các executable được tạo trong `build/Debug/`:
 
-The project contains three testing levels:
-
-* **Unit Tests** � individual classes/components
-* **Integration Tests** � interaction between components
-* **System / E2E Tests** � complete application flows
-
-### Run All Tests
-
-From the `build` directory:
-
-```cmd
-ctest --output-on-failure
+```text
+QuizApp.exe
+run_unit_tests.exe
+run_integration_tests.exe
+run_system_tests.exe
 ```
 
-### Run Tests Separately
-
-**Command Prompt:**
-
-```cmd
-Debug\run_unit_tests.exe
-Debug\run_integration_tests.exe
-Debug\run_system_tests.exe
-```
-
-**PowerShell:**
+### Chạy app chính từ terminal - Windows Debug
 
 ```powershell
-.\Debug\run_unit_tests.exe
-.\Debug\run_integration_tests.exe
-.\Debug\run_system_tests.exe
+.\build\Debug\QuizApp.exe
 ```
 
-## Google Test Filtering
+### Chạy bằng cách double-click `QuizApp.exe`
 
-Use `--gtest_filter` to execute selected test suites or test cases.
+Có thể double-click `build/Debug/QuizApp.exe`. Từ vị trí này, ứng dụng tự đi lên hai cấp để tìm và sử dụng chung `data/` ở project root.
 
-### Run one test
+Menu chính:
 
-```cmd
-Debug\run_unit_tests.exe --gtest_filter=QuizEngineTest.Submit_CorrectMCQ_WrongTF_ScoreIs2of3_TC11
+```text
+1. Question Bank
+2. Quiz Management
+3. Take Quiz
+4. Save & Exit
 ```
 
-### Run an entire test suite
+Luồng demo đề xuất:
 
-```cmd
-Debug\run_unit_tests.exe --gtest_filter=QuizEngineTest.*
+1. Mở `Question Bank` để xem hoặc thêm câu hỏi.
+2. Mở `Quiz Management`, tạo Quiz và thêm các Question ID.
+3. Chọn `Take Quiz`, nhập Quiz ID, trả lời và Submit.
+4. Chọn `Save & Exit` để lưu dữ liệu trước khi thoát.
+
+## Định dạng dữ liệu
+
+### `data/questions.txt`
+
+```text
+MCQ|id|points|prompt|optionA;optionB;optionC;optionD|correctOption
+TF|id|points|prompt|correctAnswer
 ```
 
-### Run tests matching a pattern
+Ví dụ:
 
-```cmd
-Debug\run_unit_tests.exe --gtest_filter=*TC12*
+```text
+MCQ|101|2|2 + 2 = ?|3;4;5;6|B
+TF|102|1|C++ supports inheritance|true
 ```
 
-### Run multiple suites
+### `data/quizzes.txt`
 
-```cmd
-Debug\run_unit_tests.exe --gtest_filter=QuestionBankTest.*:QuizEngineTest.*
+```text
+quizId|title|questionId1,questionId2,...
 ```
 
-### Exclude selected tests
+Ví dụ:
 
-```cmd
-Debug\run_unit_tests.exe --gtest_filter=QuizEngineTest.*-*TC14*
+```text
+201|C++ Basics|101,102
 ```
 
-> In PowerShell, prepend `.\` to executable paths.
+Không dùng các ký tự phân tách `|`, `;` hoặc `,` trong prompt, lựa chọn hoặc title của Quiz.
 
-## Running the Application
+## Chạy automated tests
 
-After building successfully, run the main quiz application from the `build` directory:
-
-**Command Prompt:**
-
-```cmd
-Debug\quiz_app.exe
-```
-
-**PowerShell:**
+Windows Debug, chạy từ thư mục gốc:
 
 ```powershell
-.\Debug\quiz_app.exe
+.\build\Debug\run_unit_tests.exe --gtest_color=no
+.\build\Debug\run_integration_tests.exe --gtest_color=no
+.\build\Debug\run_system_tests.exe --gtest_color=no
 ```
 
-> If your executable has a different name, replace `quiz_app.exe` with the executable name defined in `CMakeLists.txt`.
+Chạy toàn bộ test bằng CTest:
+
+```powershell
+ctest --test-dir build -C Debug --output-on-failure
+```
+
+Chạy một test hoặc test suite:
+
+```powershell
+.\build\Debug\run_unit_tests.exe --gtest_filter=*TC01*
+.\build\Debug\run_unit_tests.exe --gtest_filter=QuizEngineTest.*
+```
+
+## Cấu trúc thư mục
+
+```text
+quiz-and-examination-system/
+|-- include/                 # Header/interface
+|   |-- Question.h           # Abstract base class
+|   |-- MCQ.h, TF.h          # Hai loại câu hỏi
+|   |-- QuestionBank.h       # Quản lý và sở hữu câu hỏi
+|   |-- Quiz.h               # Một Quiz và thứ tự Question ID
+|   |-- QuizManager.h        # Quản lý nhiều Quiz
+|   |-- QuizEngine.h         # Phiên làm bài và chấm điểm
+|   |-- DataFileManager.h    # Persistence file text
+|   |-- InputValidator.h     # Validation console input
+|   `-- QuizApp.h            # Menu và điều phối use case
+|-- src/                     # Implementation của các class
+|-- data/
+|   |-- questions.txt        # Dữ liệu mẫu Question Bank
+|   `-- quizzes.txt          # Dữ liệu mẫu Quiz
+|-- tests/
+|   |-- unit/                # Unit tests
+|   |-- integration/         # Integration tests
+|   |-- system/              # System/E2E tests
+|   `-- test_cases.md        # Mô tả test case
+|-- main.cpp                 # Khởi tạo và chạy QuizApp
+|-- CMakeLists.txt           # Cấu hình build app và tests
+|-- README.md                # Tài liệu hướng dẫn cách build, chạy dự án cùng các thông tin tổng quan
+`-- build/                   # Build artifacts
+```
+
+## Kiến trúc và trách nhiệm
+
+| Thành phần | Trách nhiệm |
+|---|---|
+| `Question`, `MCQ`, `TF` | Domain model và hành vi đa hình `display()`/`checkAnswer()` |
+| `QuestionBank` | Collection câu hỏi, validation, tìm kiếm và CRUD |
+| `Quiz`, `QuizManager` | Quản lý Quiz và thứ tự Question ID |
+| `QuizEngine` | Trạng thái phiên làm bài, đáp án và tính điểm |
+| `DataFileManager` | Chuyển đổi giữa file text và object |
+| `InputValidator` | Kiểm tra dữ liệu nhập |
+| `QuizApp` | Menu và điều phối các module |
+| `main.cpp` | Chỉ khởi tạo `QuizApp` và bắt đầu ứng dụng |
+
+```text
+Console -> QuizApp -> QuestionBank / QuizManager / QuizEngine
+                       ^                         |
+                       |                         v
+                  DataFileManager <------- Question objects
+```
+
+## Giới hạn dự án đã chọn
+
+- Tối đa 100 câu hỏi trong Question Bank.
+- Tối đa 10 Quiz.
+- Tối đa 30 câu hỏi trong mỗi Quiz.
+- Chỉ hỗ trợ hai loại câu hỏi bắt buộc: MCQ và TF.
+- MCQ có đúng 4 lựa chọn A-D; TF dùng `true` hoặc `false`.
+- ID và points phải là số nguyên dương.
+- Quiz chỉ lưu Question ID, không lưu con trỏ trực tiếp tới Question.
+- Không lưu phiên làm bài, đáp án hoặc kết quả sau khi thoát.
+- Không có GUI, database, networking, tài khoản, timer hoặc multithreading.

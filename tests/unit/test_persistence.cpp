@@ -197,7 +197,7 @@ TEST_F(PersistenceTest, LoadQuizzes_QuestionIdNotInBank_LineSkipped) {
 // Round-trip: save then reload (TC-15)
 // ================================================================
 
-TEST_F(PersistenceTest, SaveAndReloadQuestions_DataMatchesOriginal) {
+TEST_F(PersistenceTest, SaveAndReloadQuestions_DataMatchesOriginal_TC15) {
     QuestionBank original;
     buildSampleBank(original);
 
@@ -218,7 +218,7 @@ TEST_F(PersistenceTest, SaveAndReloadQuestions_DataMatchesOriginal) {
     }
 }
 
-TEST_F(PersistenceTest, SaveAndReloadQuizzes_DataMatchesOriginal) {
+TEST_F(PersistenceTest, SaveAndReloadQuizzes_DataMatchesOriginal_TC15) {
     QuestionBank bank;
     buildSampleBank(bank);
 
@@ -244,7 +244,7 @@ TEST_F(PersistenceTest, SaveAndReloadQuizzes_DataMatchesOriginal) {
     EXPECT_EQ(reloadedQuiz->getQuestionCount(), origQuiz->getQuestionCount());
 }
 
-TEST_F(PersistenceTest, SaveAndReload_MCQOptionsAndCorrectOption_Preserved) {
+TEST_F(PersistenceTest, SaveAndReload_MCQOptionsAndCorrectOption_Preserved_TC15) {
     std::string opts[4] = { "3", "4", "5", "6" };
     QuestionBank bank;
     bank.addQuestion(new MCQ(101, "2 + 2 = ?", 2, opts, 'B'));
@@ -263,7 +263,7 @@ TEST_F(PersistenceTest, SaveAndReload_MCQOptionsAndCorrectOption_Preserved) {
     EXPECT_EQ(q->getCorrectOption(), 'B');
 }
 
-TEST_F(PersistenceTest, SaveAndReload_TFCorrectAnswer_Preserved) {
+TEST_F(PersistenceTest, SaveAndReload_TFCorrectAnswer_Preserved_TC15) {
     QuestionBank bank;
     bank.addQuestion(new TF(102, "C++ supports inheritance", 1, true));
     bank.addQuestion(new TF(103, "Java is C++", 1, false));
@@ -281,7 +281,7 @@ TEST_F(PersistenceTest, SaveAndReload_TFCorrectAnswer_Preserved) {
     EXPECT_FALSE(tf_false->getCorrectAnswer());
 }
 
-TEST_F(PersistenceTest, SaveAndReload_QuizQuestionOrder_Preserved) {
+TEST_F(PersistenceTest, SaveAndReload_QuizQuestionOrder_Preserved_TC15) {
     QuestionBank bank;
     buildSampleBank(bank);
 

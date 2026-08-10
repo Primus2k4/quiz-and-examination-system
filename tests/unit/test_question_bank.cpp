@@ -101,7 +101,7 @@ TEST_F(QuestionBankTest, GetAt_ReturnsQuestionsInInsertionOrder) {
 // Rejection of invalid additions (TC-02)
 // ================================================================
 
-TEST_F(QuestionBankTest, AddDuplicateId_Rejected) {
+TEST_F(QuestionBankTest, AddDuplicateId_Rejected_TC02) {
     bank.addQuestion(new MCQ(101, "Original", 2, opts, 'A'));
     MCQ* dup = new MCQ(101, "Duplicate", 2, opts, 'B');
     EXPECT_FALSE(bank.addQuestion(dup));
@@ -109,21 +109,21 @@ TEST_F(QuestionBankTest, AddDuplicateId_Rejected) {
     delete dup;
 }
 
-TEST_F(QuestionBankTest, AddEmptyPrompt_Rejected) {
+TEST_F(QuestionBankTest, AddEmptyPrompt_Rejected_TC02) {
     MCQ* q = new MCQ(103, "", 2, opts, 'A');
     EXPECT_FALSE(bank.addQuestion(q));
     EXPECT_EQ(bank.getCount(), 0);
     delete q;
 }
 
-TEST_F(QuestionBankTest, AddZeroPoints_Rejected) {
+TEST_F(QuestionBankTest, AddZeroPoints_Rejected_TC02) {
     MCQ* q = new MCQ(103, "Prompt", 0, opts, 'A');
     EXPECT_FALSE(bank.addQuestion(q));
     EXPECT_EQ(bank.getCount(), 0);
     delete q;
 }
 
-TEST_F(QuestionBankTest, AddEmptyMCQOption_Rejected) {
+TEST_F(QuestionBankTest, AddEmptyMCQOption_Rejected_TC02) {
     std::string badOpts[4] = { "A", "", "C", "D" };
     MCQ* q = new MCQ(103, "Prompt", 2, badOpts, 'A');
     EXPECT_FALSE(bank.addQuestion(q));
@@ -131,7 +131,7 @@ TEST_F(QuestionBankTest, AddEmptyMCQOption_Rejected) {
     delete q;
 }
 
-TEST_F(QuestionBankTest, AddInvalidMCQCorrectOption_Rejected) {
+TEST_F(QuestionBankTest, AddInvalidMCQCorrectOption_Rejected_TC02) {
     MCQ* q = new MCQ(103, "Prompt", 2, opts, 'Z');
     EXPECT_FALSE(bank.addQuestion(q));
     EXPECT_EQ(bank.getCount(), 0);
@@ -189,10 +189,10 @@ TEST_F(QuestionBankTest, UpdateQuestion_NonExistingId_Rejected) {
 }
 
 // ================================================================
-// Remove question (FR-01)
+// Remove question (TC-05)
 // ================================================================
 
-TEST_F(QuestionBankTest, RemoveMiddleQuestion_ShiftsRemaining) {
+TEST_F(QuestionBankTest, RemoveMiddleQuestion_ShiftsRemaining_TC05) {
     bank.addQuestion(new MCQ(401, "Q1", 1, opts, 'A'));
     bank.addQuestion(new TF(402, "Q2", 1, true));
     bank.addQuestion(new MCQ(403, "Q3", 1, opts, 'C'));
@@ -205,7 +205,7 @@ TEST_F(QuestionBankTest, RemoveMiddleQuestion_ShiftsRemaining) {
     EXPECT_EQ(bank.getAt(2), nullptr);
 }
 
-TEST_F(QuestionBankTest, RemoveFirstQuestion_RemainingShiftsLeft) {
+TEST_F(QuestionBankTest, RemoveFirstQuestion_RemainingShiftsLeft_TC05) {
     bank.addQuestion(new MCQ(401, "Q1", 1, opts, 'A'));
     bank.addQuestion(new TF(402, "Q2", 1, true));
 
@@ -213,20 +213,20 @@ TEST_F(QuestionBankTest, RemoveFirstQuestion_RemainingShiftsLeft) {
     EXPECT_EQ(bank.getAt(0)->getId(), 402);
 }
 
-TEST_F(QuestionBankTest, RemoveLastQuestion_BankBecomesEmpty) {
+TEST_F(QuestionBankTest, RemoveLastQuestion_BankBecomesEmpty_TC05) {
     bank.addQuestion(new TF(401, "Q1", 1, true));
     EXPECT_TRUE(bank.removeQuestion(401));
     EXPECT_EQ(bank.getCount(), 0);
     EXPECT_EQ(bank.getAt(0), nullptr);
 }
 
-TEST_F(QuestionBankTest, RemoveNonExisting_Fails_CountUnchanged) {
+TEST_F(QuestionBankTest, RemoveNonExisting_Fails_CountUnchanged_TC05) {
     bank.addQuestion(new TF(401, "Q1", 1, true));
     EXPECT_FALSE(bank.removeQuestion(999));
     EXPECT_EQ(bank.getCount(), 1);
 }
 
-TEST_F(QuestionBankTest, RemoveFromEmptyBank_Fails) {
+TEST_F(QuestionBankTest, RemoveFromEmptyBank_Fails_TC05) {
     EXPECT_FALSE(bank.removeQuestion(1));
 }
 
@@ -245,7 +245,7 @@ protected:
     QuestionBank bank;
 };
 
-TEST_F(QuestionBankSearchTest, SearchByPartialPrompt_FindsMatch) {
+TEST_F(QuestionBankSearchTest, SearchByPartialPrompt_FindsMatch_TC03) {
     std::string out = captureStdout([&] { bank.displayByPrompt("object oriented"); });
     EXPECT_NE(out.find("What is Object Oriented Programming?"), std::string::npos);
 }
@@ -255,13 +255,13 @@ TEST_F(QuestionBankSearchTest, SearchIsCaseInsensitive_TC03) {
     EXPECT_NE(out.find("What is Object Oriented Programming?"), std::string::npos);
 }
 
-TEST_F(QuestionBankSearchTest, SearchFindsMultipleMatches) {
+TEST_F(QuestionBankSearchTest, SearchFindsMultipleMatches_TC03) {
     // "inheritance" matches only one, "supports" also one — test both exist
     std::string out = captureStdout([&] { bank.displayByPrompt("supports"); });
     EXPECT_NE(out.find("C++ supports inheritance"), std::string::npos);
 }
 
-TEST_F(QuestionBankSearchTest, SearchNoMatch_ReportsNotFound) {
+TEST_F(QuestionBankSearchTest, SearchNoMatch_ReportsNotFound_TC03) {
     std::string out = captureStdout([&] { bank.displayByPrompt("does-not-exist"); });
     EXPECT_NE(out.find("No matching questions found."), std::string::npos);
 }

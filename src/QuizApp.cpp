@@ -3,11 +3,44 @@
 #include "InputValidator.h"
 #include "MCQ.h"
 #include "TF.h"
+#include <fstream>
 #include <iostream>
 using namespace std;
 
-const string QUESTIONS_FILE = "data/questions.txt";
-const string QUIZZES_FILE = "data/quizzes.txt";
+// Locate the shared project data directory regardless of whether the app is
+// started from the project root, build/Debug, or Visual Studio's out/build.
+// This avoids copying data files into every build configuration.
+#ifndef PROJECT_DATA_DIR
+#define PROJECT_DATA_DIR "data"
+#endif
+static string resolveDataDirectory() {
+    const string candidates[] = {
+        "data/",
+        "../data/",
+        "../../data/",
+        "../../../data/",
+        "../../../../data/"
+    };
+
+    for (const string& directory : candidates) {
+        ifstream questions(directory + "questions.txt");
+        ifstream quizzes(directory + "quizzes.txt");
+        if (questions.good() || quizzes.good()) {
+            return directory;
+        }
+    }
+
+    // Preserve the original behavior when no data file exists: the
+    // persistence layer starts empty and creates data/ files on save.
+    return "data/";
+}
+#ifdef PROJECT_DATA_DIR
+const string DATA_DIRECTORY = string(PROJECT_DATA_DIR) + "/";
+#else
+const string DATA_DIRECTORY = resolveDataDirectory();
+#endif
+const string QUESTIONS_FILE = DATA_DIRECTORY + "questions.txt";
+const string QUIZZES_FILE = DATA_DIRECTORY + "quizzes.txt";
 
 
 static bool inputCommonFields(int& id, int& points, string& prompt) {

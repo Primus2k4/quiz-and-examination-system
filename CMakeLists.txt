@@ -13,7 +13,26 @@ file(GLOB LOGIC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 # 3. Executable Target for the Main Application (Links main.cpp at root with all LOGIC_SOURCES)
 add_executable(QuizApp "main.cpp" ${LOGIC_SOURCES})
-
+# 4. Copy data folder to output directory
+add_custom_command(TARGET QuizApp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_CURRENT_SOURCE_DIR}/data"
+            "$<TARGET_FILE_DIR:QuizApp>/data"
+    COMMENT "Copying data folder to output directory..."
+)
+# 5. Link to data folder
+target_compile_definitions(QuizApp PRIVATE 
+    PROJECT_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data"
+)
+if(TARGET run_unit_tests)
+    target_compile_definitions(run_unit_tests PRIVATE PROJECT_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
+endif()
+if(TARGET run_integration_tests)
+    target_compile_definitions(run_integration_tests PRIVATE PROJECT_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
+endif()
+if(TARGET run_system_tests)
+    target_compile_definitions(run_system_tests PRIVATE PROJECT_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
+endif()
 # ===================================================================
 # GOOGLE TEST v1.10.0 INTEGRATION (LINK DIRECTLY TO LOGIC)
 # ===================================================================

@@ -26,7 +26,7 @@ protected:
 };
 
 // TC-07: Start with empty quiz
-TEST_F(QuizEngineTest, Start_EmptyQuiz_Rejected_StateRemainsNotStarted) {
+TEST_F(QuizEngineTest, Start_EmptyQuiz_Rejected_StateRemainsNotStarted_TC07) {
     QuizEngine engine;
     Quiz* empty = quizManager.findQuiz(2);
     ASSERT_NE(empty, nullptr);
@@ -36,7 +36,7 @@ TEST_F(QuizEngineTest, Start_EmptyQuiz_Rejected_StateRemainsNotStarted) {
 }
 
 // TC-06: Start with valid quiz
-TEST_F(QuizEngineTest, Start_ValidQuiz_TransitionsToInProgress) {
+TEST_F(QuizEngineTest, Start_ValidQuiz_TransitionsToInProgress_TC06) {
     QuizEngine engine;
     Quiz* quiz = quizManager.findQuiz(1);
     ASSERT_NE(quiz, nullptr);
@@ -45,7 +45,7 @@ TEST_F(QuizEngineTest, Start_ValidQuiz_TransitionsToInProgress) {
     EXPECT_EQ(engine.getState(), IN_PROGRESS);
 }
 
-TEST_F(QuizEngineTest, Start_ValidQuiz_FirstQuestionBecomeCurrent) {
+TEST_F(QuizEngineTest, Start_ValidQuiz_FirstQuestionBecomeCurrent_TC06) {
     QuizEngine engine;
     engine.start(quizManager.findQuiz(1), &bank);
 
@@ -53,7 +53,7 @@ TEST_F(QuizEngineTest, Start_ValidQuiz_FirstQuestionBecomeCurrent) {
 }
 
 // TC-08: answer() before start
-TEST_F(QuizEngineTest, Answer_BeforeStart_Rejected_NoStateChange) {
+TEST_F(QuizEngineTest, Answer_BeforeStart_Rejected_NoStateChange_TC08) {
     QuizEngine engine;
     EXPECT_FALSE(engine.answer("C"));
     EXPECT_EQ(engine.getState(), NOT_STARTED);

@@ -66,12 +66,12 @@ TEST(UnitTest_QuestionBase, SetPoints_Negative_Rejected) {
 // ================================================================
 
 // TC-09: 
-TEST(UnitTest_MCQ, CheckAnswer_UpperCase_ReturnsTrue) {
+TEST(UnitTest_MCQ, CheckAnswer_UpperCase_ReturnsTrue_TC09) {
     MCQ q = makeMCQ(); 
     EXPECT_TRUE(q.checkAnswer("B"));
 }
 
-TEST(UnitTest_MCQ, CheckAnswer_LowerCase_ReturnsTrue) {
+TEST(UnitTest_MCQ, CheckAnswer_LowerCase_ReturnsTrue_TC09) {
     MCQ q = makeMCQ();
     EXPECT_TRUE(q.checkAnswer("b"));
 }
@@ -147,14 +147,14 @@ TEST(UnitTest_MCQ, SetCorrectOption_Invalid_Rejected) {
 // ================================================================
 
 // TC-10: 
-TEST(UnitTest_TF, CheckAnswer_CorrectIsTrue_TrueInputReturnsTrue) {
+TEST(UnitTest_TF, CheckAnswer_CorrectIsTrue_TrueInputReturnsTrue_TC10) {
     TF q = makeTF_True();
     EXPECT_TRUE(q.checkAnswer("true"));
     EXPECT_TRUE(q.checkAnswer("True"));
     EXPECT_TRUE(q.checkAnswer("TRUE"));
 }
 
-TEST(UnitTest_TF, CheckAnswer_CorrectIsTrue_FalseInputReturnsFalse) {
+TEST(UnitTest_TF, CheckAnswer_CorrectIsTrue_FalseInputReturnsFalse_TC10) {
     TF q = makeTF_True();
     EXPECT_FALSE(q.checkAnswer("false"));
     EXPECT_FALSE(q.checkAnswer("False"));
@@ -162,14 +162,14 @@ TEST(UnitTest_TF, CheckAnswer_CorrectIsTrue_FalseInputReturnsFalse) {
 }
 
 // 
-TEST(UnitTest_TF, CheckAnswer_CorrectIsFalse_FalseInputReturnsTrue) {
+TEST(UnitTest_TF, CheckAnswer_CorrectIsFalse_FalseInputReturnsTrue_TC10) {
     TF q = makeTF_False();
     EXPECT_TRUE(q.checkAnswer("false"));
     EXPECT_TRUE(q.checkAnswer("False"));
     EXPECT_TRUE(q.checkAnswer("FALSE"));
 }
 
-TEST(UnitTest_TF, CheckAnswer_CorrectIsFalse_TrueInputReturnsFalse) {
+TEST(UnitTest_TF, CheckAnswer_CorrectIsFalse_TrueInputReturnsFalse_TC10) {
     TF q = makeTF_False();
     EXPECT_FALSE(q.checkAnswer("true"));
     EXPECT_FALSE(q.checkAnswer("True"));
@@ -206,7 +206,7 @@ TEST(UnitTest_TF, SetCorrectAnswer_UpdatesValue) {
 // ================================================================
 
 // TC-11:
-TEST(UnitTest_Polymorphism, ScoreCalculation_ViaPtrNoIfSwitch) {
+TEST(UnitTest_Polymorphism, ScoreCalculation_ViaPtrNoIfSwitch_TC11) {
     std::string opts[4] = { "3", "4", "5", "6" };
     Question* q1 = new MCQ(101, "2 + 2 = ?", 2, opts, 'B');
     Question* q2 = new TF(102, "C++ supports inheritance", 1, true);
